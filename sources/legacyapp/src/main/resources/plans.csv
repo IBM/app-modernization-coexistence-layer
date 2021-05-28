@@ -1,0 +1,5 @@
+Plan name,Data limit,Cost,Description
+LITE,5,100,5GB data and thereafter charged at $50 per GB.
+STANDARD,10,250,5GB data and thereafter charged at $50 per GB.
+PREMIUM,20,475,20GB data and thereafter charged at $50 per GB.
+ENTERPRISE,40,800,40GB data and thereafter charged at $50 per GB.
