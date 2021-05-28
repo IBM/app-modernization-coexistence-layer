@@ -1,7 +1,0 @@
----
-applications:
- - name: app-legacy
-   random-route: true
-   path: target/app-legacy.war
-   memory: 512M
-   instances: 1
