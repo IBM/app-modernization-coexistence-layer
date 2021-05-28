@@ -1,2 +1,2 @@
-# Modernize a legacy application using a coexistence layer
+# Modernize a legacy application using a co-existence layer
 
