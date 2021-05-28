@@ -1,1 +1,1 @@
-# Legacy appliation
+# Legacy application
