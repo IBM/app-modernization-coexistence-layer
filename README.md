@@ -3,19 +3,30 @@
 
 App modernization is the process of improving your current applications - or building entirely new ones - to take advantage of new, innovative tech. There needs to be a practical approach to move your legacy applications to new technologies without disrupting the current operations. Legacy applications could be a monolith with tightly coupled modules. The move to new technologies needs to be an incremental approach.
 
-In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies but without disrupting the existing legacy system.
+In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies but without disrupting the existing legacy system. The legacy system uses a DB2 database and is the system of record. The new chatbot system uses a Postgresql database. A subset of data needed by the chatbot system is replicated to the Postgresql database using [IBM Data Stage](https://www.ibm.com/in-en/products/infosphere-datastage).
 
+When you have completed this code pattern, you will understand how to:
+- Create Datastage flows and jobs for data replication
+- Create a chatbot using Watson Assistant
+- Create cloud functions in Watson Assistant to query databases
 
 ## Flow
 
 ![arch](images/architecture.png)
 
+1. The employee performs one of many actions like create new mobile plan, enter new customer information or generate billing for customers.
+2. The data is stored in the DB2 database.
+3. Datastage reads data from DB2 database.
+4. Datastage replicates the data in the Postgresql database.
+5. A customer queries for billing information, data usage and recommendations.
+6. Watson Assistant queries the Postgresql database and a response is provided to the customer.
 
 ## Prerequisites
 1. [IBM Cloud Account](https://cloud.ibm.com)
 1. [IBM Cloud CLI](https://cloud.ibm.com/docs/cli?topic=cli-getting-started)
-1. [Java](https://www.java.com/en/)
-1. [Maven](https://maven.apache.org/)
+1. [IBM Cloud Pak for Data](https://cloud.ibm.com/catalog/content/ibm-cp-datacore-6825cc5d-dbf8-4ba2-ad98-690e6f221701-global)
+3. [Java](https://www.java.com/en/)
+4. [Maven](https://maven.apache.org/)
 
 ## Steps
 
