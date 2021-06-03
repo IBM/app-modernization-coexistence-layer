@@ -74,14 +74,14 @@ Run the below command to create service credentials:
 ibmcloud resource service-key-create skey --instance-id [GUID of DB2]
 ```
 
-## 1. Clone the repo
+## 2. Clone the repo
 
 Run the below command to clone the repo:
 ```
 git clone https://github.com/IBM/app-modernization-coexistence-layer.git
 ```
 
-## 1. Build and deploy the legacy application
+## 3. Build and deploy the legacy application
 
 Open IBM Cloud Dashboard. Go to the `db2-legacy` database instance you created earlier. Select `Service credentials` on the menu. Copy the DB2 credentials by clicking on the `Copy to clipboard` icon. This needs to be added to the `credentials-db2.json` file.
 
