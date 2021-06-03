@@ -19,7 +19,8 @@ When you have completed this code pattern, you will understand how to:
 3. Datastage reads data from DB2 database.
 4. Datastage replicates the data in the Postgresql database.
 5. A customer queries for billing information, data usage and recommendations.
-6. Watson Assistant queries the Postgresql database and a response is provided to the customer.
+6. Watson Assistant invokes Cloud Functions for the queries.
+7. Cloud functions queries Postgresql for data, processes the data and returns the response to Watson Assistant.
 
 ## Prerequisites
 1. [IBM Cloud Account](https://cloud.ibm.com)
