@@ -3,6 +3,124 @@
 
 App modernization is the process of improving your current applications - or building entirely new ones - to take advantage of new, innovative tech. There needs to be a practical approach to move your legacy applications to new technologies without disrupting the current operations. Legacy applications could be a monolith with tightly coupled modules. The move to new technologies needs to be an incremental approach.
 
-In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The comany has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies but without disrupting the existing legacy system.
+In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies but without disrupting the existing legacy system.
 
+
+## Flow
+
+![arch](images/architecture.png)
+
+
+## Prerequisites
+1. [IBM Cloud Account](https://cloud.ibm.com)
+1. [IBM Cloud CLI](https://cloud.ibm.com/docs/cli?topic=cli-getting-started)
+1. [Java](https://www.java.com/en/)
+1. [Maven](https://maven.apache.org/)
+
+## Steps
+
+1. [Create an instance of DB2 database](#1-create-an-instance-of-db2-database)
+2. [Clone the repo](#1-clone-the-repo)
+3. [Build and deploy the legacy application](#1-build-and-deploy-the-legacy-application)
+
+## 1. Create an instance of DB2 database
+
+Login to IBM Cloud:
+```
+ibmcloud login [--sso]
+```
+
+Run the below command to create an instance of DB2:
+```
+ibmcloud resource service-instance-create db2-legacy dashdb-for-transactions free us-south
+```
+
+The DB2 instance is created and the output appears as shown below:
+```
+Creating service instance db2-legacy in resource group default of account Balaji Kadambi's Account as bkadambi@in.ibm.com...
+OK
+Service instance db2-legacy was created.
+                     
+Name:             db2-legacy   
+ID:               crn:v1:bluemix:public:dashdb-for-transactions:us-south:a/9xxxxb::   
+GUID:             xxxx   
+Location:         us-south   
+State:            active   
+Type:             service_instance   
+Sub Type:            
+Allow Cleanup:    false   
+Locked:           false   
+Created at:       2021-06-03T04:52:38Z   
+Updated at:       2021-06-03T04:52:38Z   
+Last Operation:                   
+                  Status    create succeeded      
+                  Message   Completed create instance operation   
+```
+Make a note of the GUID. It is needed in the next step.
+
+Run the below command to create service credentials:
+```
+ibmcloud resource service-key-create skey --instance-id [GUID of DB2]
+```
+
+## 1. Clone the repo
+
+Run the below command to clone the repo:
+```
+git clone https://github.com/IBM/app-modernization-coexistence-layer.git
+```
+
+## 1. Build and deploy the legacy application
+
+Open IBM Cloud Dashboard. Go to the `db2-legacy` database instance you created earlier. Select `Service credentials` on the menu. Copy the DB2 credentials by clicking on the `Copy to clipboard` icon. This needs to be added to the `credentials-db2.json` file.
+
+![creds](images/creds.png)
+
+In the cloned Github repo, go to the `resources` folder:
+```
+cd app-modernization-coexistence-layer/sources/legacyapp/src/main/resources/
+```
+
+Open the `credentials-db2.json` file and paste the DB2 credentials you copied earlier.
+
+Go to the `legacypp` folder:
+```
+cd ../../..
+```
+
+Run the below command to build the application:
+```
+mvn clean install
+```
+
+Deploy the legacy application to IBM Cloud:
+```
+ibmcloud cf push
+```
+>Note: In a real world situation, the legacy application runs on-premise. The application is deployed to IBM Cloud so that it is accessible for demonstrating the code pattern.
+
+You will see the below ouput at the end when the application starts fine:
+```
+Waiting for app to start...
+
+name:              app-legacy
+requested state:   started
+routes:            app-legacy-xxxx.mybluemix.net
+last uploaded:     Thu 03 Jun 09:44:06 IST 2021
+stack:             cflinuxfs3
+buildpacks:        Liberty for Java(TM) (WAR, liberty-21.0.0_3,
+                   buildpack-v3.57-20210512-1446, ibmjdk-1.8.0_sr6fp26-20210216,
+                   env)
+
+type:            web
+instances:       1/1
+memory usage:    512M
+start command:   .liberty/initial_startup.rb
+     state     since                  cpu     memory           disk         details
+#0   running   2021-06-03T04:15:35Z   92.7%   176.3M of 512M   332M of 1G   
+```
+
+Make a note of the route(app-legacy-xxxx.mybluemix.net) in the output. 
+
+Please check if the application is accessible at http://app-legacy-xxxx.mybluemix.net/telecom.
 
