@@ -57,11 +57,6 @@ function queryDB(query, mobile_no) {
   });
 }
 
-// Used for local testing.. next three lines should remain commented when integrated with other applications
-// CURRENT_PLAN, USAGE_DATA, LATEST_BILL, RECOMMENDATION, NAME, UPDATE_PLAN
-var rdata = { "request_type": "UPDATE_PLAN", "mobile_no": "731-980-1111", "plan": "STANDARD" }
-main(rdata);
-
 async function main(data) {
   console.log("");
   console.log("REQUEST TYPE: " + data.request_type);
@@ -94,7 +89,6 @@ async function main(data) {
           "Month": getMontYear(result.rows[0].max),
           "Usage": result.rows[0].usage + " " + data_size_notation
         };
-        // Your latest bill details are as follows:<br>Bill Month: $webhook_result_1.Month<br>Usage: $webhook_result_1.Usage<br>Amount: $webhook_result_1.Amount
         var rStr = "Your latest bill details are as follows:<br>Bill Month: " + getMontYear(result.rows[0].max);
         rStr = rStr + "<br>Usage: " + result.rows[0].usage + " " + data_size_notation;
         rStr = rStr + "<br>Amount: " + currency_notation + result.rows[0].amount;
@@ -137,7 +131,6 @@ async function main(data) {
     try {
       var result = await queryDB(name_query, data.mobile_no);
       if (isDataFound(result)) {
-        // console.log("result.rows[0] = " + JSON.stringify(result.rows[0]));
         salutation = result.rows[0].salutation.includes(".") ? result.rows[0].salutation : result.rows[0].salutation + ".";
         var response = {
           "name": salutation + " " + result.rows[0].first_name + " " + result.rows[0].last_name,
@@ -196,10 +189,7 @@ async function main(data) {
     }
   }
   else if (data.request_type === 'UPDATE_PLAN') {
-    console.log("In update plan");
-    console.log("My first await before call - ");
     const response = await updatePlan(data);
-    console.log("My first await after call - " + JSON.stringify(response));
     return response;
   }
   else {
@@ -225,11 +215,9 @@ async function updatePlan(data){
     request(options, function (error, response) {
       if (error) {
         console.log("Error occurred while updating plan details");
-        //return {"response": "Error occurred while updating plan details"};
         reject({"response": "Error occurred while updating plan details"});
       }
       console.log("Update plan request response: " + response.body);
-      //return {"response": response.body};
       resolve({"response": response.body});
     });
   });
