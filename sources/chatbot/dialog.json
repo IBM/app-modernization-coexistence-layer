@@ -306,6 +306,31 @@
     },
     {
       "type": "standard",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Please enter the correct mobile number"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_2_1622533910628",
+      "next_step": {
+        "behavior": "jump_to",
+        "selector": "user_input",
+        "dialog_node": "node_1_1622533910627"
+      },
+      "conditions": "$webhook_result_1.isMobileNumValid == 0",
+      "dialog_node": "node_1_1623117163306",
+      "previous_sibling": "node_9_1623117072206"
+    },
+    {
+      "type": "standard",
       "title": "Invoke Cloud Function - Current Plan",
       "output": {},
       "parent": "node_1_1622533910627",
@@ -324,6 +349,9 @@
         "_customization": {
           "mcr": true
         }
+      },
+      "next_step": {
+        "behavior": "skip_user_input"
       },
       "conditions": "true",
       "dialog_node": "node_2_1622533910628"
@@ -391,7 +419,7 @@
           {
             "values": [
               {
-                "text": "webhook_result_2.response"
+                "text": "$webhook_result_2.response"
               }
             ],
             "response_type": "text",
@@ -508,6 +536,17 @@
       "dialog_node": "node_7_1622713805097"
     },
     {
+      "type": "standard",
+      "parent": "node_2_1622533910628",
+      "next_step": {
+        "behavior": "jump_to",
+        "selector": "user_input",
+        "dialog_node": "node_10_1620894802260"
+      },
+      "conditions": "$webhook_result_1.isMobileNumValid == 1",
+      "dialog_node": "node_9_1623117072206"
+    },
+    {
       "type": "response_condition",
       "output": {
         "generic": [
@@ -553,7 +592,7 @@
           {
             "values": [
               {
-                "text": "Welcome, $webhook_result_1.name . How can I help you today?"
+                "text": "$webhook_result_1.response"
               }
             ],
             "response_type": "text",
@@ -563,7 +602,8 @@
       },
       "parent": "node_2_1622533910628",
       "conditions": "$webhook_result_1",
-      "dialog_node": "response_3_1622533910628"
+      "dialog_node": "response_3_1622533910628",
+      "previous_sibling": "node_1_1623117163306"
     },
     {
       "type": "response_condition",
