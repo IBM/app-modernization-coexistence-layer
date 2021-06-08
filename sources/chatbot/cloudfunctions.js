@@ -132,16 +132,16 @@ async function main(data) {
       var result = await queryDB(name_query, data.mobile_no);
       if (isDataFound(result)) {
         salutation = result.rows[0].salutation.includes(".") ? result.rows[0].salutation : result.rows[0].salutation + ".";
-        var response = {
-          "name": salutation + " " + result.rows[0].first_name + " " + result.rows[0].last_name,
-          "mobile_no": data.mobile_no
-        };
+        var rStr = "Welcome, ";
+        rStr = rStr + salutation + " " + result.rows[0].first_name + " " + result.rows[0].last_name + ".";
+        rStr = rStr + "How can I help you today?"
         console.log("Response data: " + JSON.stringify(response));
 
-        return response;
+        return {"response": rStr, "isMobileNumValid": 1};
       } else {
-        console.log("No data found");
-        return { "Message": "No data found" };
+        console.log("Mobile number entered is incorrect");
+        var rStr = "Mobile number entered is incorrect."
+        return { "response": "Mobile number entered is incorrect", "isMobileNumValid": 0 };
       }
     } catch (err) {
       console.log("Error - " + JSON.stringify(err));
@@ -159,8 +159,8 @@ async function main(data) {
         var current_limit = current_limit_result.rows[0].data_limit;
         var plan_name = current_limit_result.rows[0].name;
         if (avg <= current_limit) {
-          console.log("Recommendation: Current plan is best for your usage");
-          return { "recommendation": "Current plan," + plan_name + ", is best for your usage", "code": 1, "plan": recommendation_query_result.rows[0].name };
+          console.log("Recommendation: Current plan is best for your usage. PLAN = " + plan_name);
+          return { "response": "Current plan," + plan_name + ", is best for your usage", "code": 0 };
         } else {
           var recommendation_query_result = await queryDB(recommendation_query, data.mobile_no);
           if (isDataFound(recommendation_query_result)) {
@@ -168,7 +168,7 @@ async function main(data) {
             rStr = rStr + "Plan Name: " + recommendation_query_result.rows[0].name + "<br>";
             rStr = rStr + "Description: " + recommendation_query_result.rows[0].description + "<br>";
             rStr = rStr + "Data Limit: " + recommendation_query_result.rows[0].data_limit + " " + data_size_notation + "<br>";
-            rStr = rStr + "Cost" + currency_notation + recommendation_query_result.rows[0].cost;
+            rStr = rStr + "Cost:" + currency_notation + recommendation_query_result.rows[0].cost + "<br>";
             var response = {
               "response": rStr
             };
@@ -238,11 +238,11 @@ module.exports = app;
 function getVCAPLocal() {
   let vcapLocal = {
     "connection": {
-      .
-      .
-      .
-     },
-    "legacy_app_url": <your legacy application update plan URL>
+    	.
+    	.
+    	.
+    },
+    "legacy_app_url": "<your legacy application update plan URL>"
   };
   return vcapLocal;
 }
