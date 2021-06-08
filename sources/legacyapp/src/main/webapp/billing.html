@@ -94,6 +94,7 @@
 	<script>
 	
 		$("#generateform").submit(function(event) {
+			$("#server-results1").html("Generating bill...");
 			event.preventDefault(); //prevent default action 
 			var post_url = $(this).attr("action"); //get form action url
 			var request_method = $(this).attr("method"); //get form GET/POST method
@@ -109,6 +110,7 @@
 		});
 
 		$("#queryform").submit(function(event) {
+			$("#server-results2").html("Getting billing...");
 			event.preventDefault(); //prevent default action 
 			var post_url = $(this).attr("action"); //get form action url
 			var request_method = $(this).attr("method"); //get form GET/POST method

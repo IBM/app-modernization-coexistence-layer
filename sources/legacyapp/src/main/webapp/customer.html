@@ -181,11 +181,12 @@
 						});
 
 		$("#custform").submit(function(event) {
+			$("#server-results1").html("Saving data...");
 			event.preventDefault(); //prevent default action 
 			var post_url = $(this).attr("action"); //get form action url
 			var request_method = $(this).attr("method"); //get form GET/POST method
 			var form_data = $(this).serialize(); //Encode form elements for submission
-
+        
 			$.ajax({
 				url : post_url,
 				type : request_method,
@@ -196,6 +197,8 @@
 		});
 
 		$("#listcustform").submit(function(event) {
+			$("#server-results1").html(" ");
+			$("#server-results3").html("Getting list of customers...");
 			event.preventDefault(); //prevent default action 
 			var post_url = $(this).attr("action"); //get form action url
 			var request_method = $(this).attr("method"); //get form GET/POST method
@@ -211,6 +214,8 @@
 		});
 
 		$("#searchcustform").submit(function(event) {
+			$("#server-results1").html(" ");
+			$("#server-results3").html("Getting data for customer...");
 			event.preventDefault(); //prevent default action 
 			var post_url = $(this).attr("action"); //get form action url
 			var request_method = $(this).attr("method"); //get form GET/POST method
@@ -226,6 +231,8 @@
 		});
 
 		$("#changeplanform").submit(function(event) {
+			$("#server-results1").html(" ");
+			$("#server-results4").html("Processing request...");
 			event.preventDefault(); //prevent default action 
 			var post_url = $(this).attr("action"); //get form action url
 			var request_method = $(this).attr("method"); //get form GET/POST method
