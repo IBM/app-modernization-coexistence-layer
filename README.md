@@ -136,3 +136,31 @@ Make a note of the route(app-legacy-xxxx.mybluemix.net) in the output.
 
 Please check if the application is accessible at http://app-legacy-xxxx.mybluemix.net/telecom.
 
+## Login to CP4D SaaS offering and Create Services
+
+Access https://dataplatform.cloud.ibm.com/registration/stepone?context=cpdaas&apps=all to access CP4D SaaS offering. Select a region preferrably Dallas as DataStage service exists only in Dallas and Frankfurt region at the time of writing this code pattern. You must be having an active IBM Cloud account by now, so click on `Log in with your IBMid`. It sets up the core services of Cloud Pak for you. Launch the SaaS offering by clicking `Go to IBM Cloud Pak for Data`. It takes you to the integrated dashboard where you can create projects and work with your data.
+
+On this dashboard, click on the Hamburger menu and navigate to Services Catalog under Services. It shows the list of integrated services.
+
+Create the following services:
+* **Databases for PostgreSQL**
+
+> Note: This code pattern uses PostgreSQL DB for the modernized application. You can setup your own PostgreSQL DB and provide connection details or use the service provided on IBM Public Cloud as shown here.
+
+  On the services catalog page, select `Databases` in Category, it will show list of available databases of which instance can be created on IBM Cloud. Choose `Database for PostgreSQL`. Provide the required values like region, service name, resource group. Rest all values are optional. You can proceed with the default values and click `Create`. Post this, it will create service instance on IBM Cloud and allows you to add more services. Click on `Add Service` and perform the steps as exaplined in next section.
+  
+* **Cloud Object Storage (COS)**
+
+  On the services catalog page, select `Storage` in Category and choose Cloud Object Storage. Choose the pricing plan, resource group and provide the service name, then click `Create`. Note that you can use `Lite` plan of this service for this code pattern. COS is required to save your assets and project details which we will be creating in later steps. Click on `Add Service` and perform the steps as exaplined in next section.
+  
+* **DataStage**
+
+  On the services catalog page, select `Analytics` in Category and choose DataStage. Select the region, resource group and provide the service name of your choice, then click `Create`. Note that you can use `Lite` plan of this service for this code pattern. This instance will be used to create DataStage flows for data replication. Click on `Add Service` and perform the steps as exaplined in next section.
+  
+* **Watson Assistant**
+
+  On the services catalog page, select `AI/Machine Learning` in Category and choose Watson Assistant. Select the region, resource group and provide the service name, then click `Create`. Note that you can use `Lite` plan of this service for this code pattern.
+  
+You have created all the required services of CP4D for this code pattern. You can read more about CP4D SaaS offering [here](https://www.ibm.com/products/cloud-pak-for-data/as-a-service). Now, click on the hamburger menu and navigate to Home.
+
+
