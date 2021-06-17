@@ -1,7 +1,7 @@
 (WORK IN PROGRESS)
-# Modernize a legacy application using a co-existence layer 
+# Digital Decoupling Layer for Cloud Modernization
 
-App modernization is the process of improving your current applications - or building entirely new ones - to take advantage of new, innovative tech. There needs to be a practical approach to move your legacy applications to new technologies without disrupting the current operations. Legacy applications could be a monolith with tightly coupled modules. The move to new technologies needs to be an incremental approach.
+Cloud Modernization at scale can be disruptive and clients prefer to start the journey that incrementally transition them to reach them to required digital maturity. This can be made possible by developing a co-existing layer that operates alongside core business application and database. Digital decoupling can also be seen as a coexistence layer that helps clients to incrementally tranistion to the future state with minimal or no disruption to the existing technology stack. There are numerous usecases that can be made possible using the decoupling layer, one such is the customer empowerment and smart front office application.  
 
 In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies but without disrupting the existing legacy system. The legacy system uses a DB2 database and is the system of record. The new chatbot system uses a Postgresql database. A subset of data needed by the chatbot system is replicated to the Postgresql database using [IBM Data Stage](https://www.ibm.com/in-en/products/infosphere-datastage).
 
@@ -32,8 +32,10 @@ When you have completed this code pattern, you will understand how to:
 ## Steps
 
 1. [Create an instance of DB2 database](#1-create-an-instance-of-db2-database)
-2. [Clone the repo](#1-clone-the-repo)
-3. [Build and deploy the legacy application](#1-build-and-deploy-the-legacy-application)
+2. [Clone the repo](#2-clone-the-repo)
+3. [Build and deploy the legacy application](#3-build-and-deploy-the-legacy-application)
+4. [Set up legacy database](#4-set-up-legacy-database)
+5. [View sample data](#5-view-sample-data)
 
 ## 1. Create an instance of DB2 database
 
@@ -135,4 +137,16 @@ start command:   .liberty/initial_startup.rb
 Make a note of the route(app-legacy-xxxx.mybluemix.net) in the output. 
 
 Please check if the application is accessible at http://app-legacy-xxxx.mybluemix.net/telecom.
+
+
+## 4. Set up legacy database
+
+Invoke the URL http://app-legacy-xxxx.mybluemix.net/telecom/apis/setup-legacy-db from the browser to create tables in the DB2 database and populate sample data.
+
+## 5. View sample data
+
+You can now view the sample data. 
+
+![sample_data](images/sample_data.gif)
+
 
