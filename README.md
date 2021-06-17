@@ -34,6 +34,8 @@ When you have completed this code pattern, you will understand how to:
 1. [Create an instance of DB2 database](#1-create-an-instance-of-db2-database)
 2. [Clone the repo](#1-clone-the-repo)
 3. [Build and deploy the legacy application](#1-build-and-deploy-the-legacy-application)
+4. [Set up legacy database](#1-set-up-legacy-database)
+5. [View sample data](#1-view-sample-data)
 
 ## 1. Create an instance of DB2 database
 
@@ -135,4 +137,17 @@ start command:   .liberty/initial_startup.rb
 Make a note of the route(app-legacy-xxxx.mybluemix.net) in the output. 
 
 Please check if the application is accessible at http://app-legacy-xxxx.mybluemix.net/telecom.
+
+![home](images/home.png)
+
+## 3. Set up legacy database
+
+Invoke the URL http://app-legacy-xxxx.mybluemix.net/telecom/apis/setup-legacy-db from the browser to create tables in the DB2 database and populate sample data.
+
+## 4. View sample data
+
+You can now view the sample data. 
+
+![sample_data](images/sample_data.gif)
+
 
