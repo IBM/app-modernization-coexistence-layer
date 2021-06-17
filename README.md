@@ -138,7 +138,6 @@ Make a note of the route(app-legacy-xxxx.mybluemix.net) in the output.
 
 Please check if the application is accessible at http://app-legacy-xxxx.mybluemix.net/telecom.
 
-![home](images/home.png)
 
 ## 3. Set up legacy database
 
