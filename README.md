@@ -139,11 +139,11 @@ Make a note of the route(app-legacy-xxxx.mybluemix.net) in the output.
 Please check if the application is accessible at http://app-legacy-xxxx.mybluemix.net/telecom.
 
 
-## 3. Set up legacy database
+## 4. Set up legacy database
 
 Invoke the URL http://app-legacy-xxxx.mybluemix.net/telecom/apis/setup-legacy-db from the browser to create tables in the DB2 database and populate sample data.
 
-## 4. View sample data
+## 5. View sample data
 
 You can now view the sample data. 
 
