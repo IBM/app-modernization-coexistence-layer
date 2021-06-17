@@ -32,10 +32,10 @@ When you have completed this code pattern, you will understand how to:
 ## Steps
 
 1. [Create an instance of DB2 database](#1-create-an-instance-of-db2-database)
-2. [Clone the repo](#1-clone-the-repo)
-3. [Build and deploy the legacy application](#1-build-and-deploy-the-legacy-application)
-4. [Set up legacy database](#1-set-up-legacy-database)
-5. [View sample data](#1-view-sample-data)
+2. [Clone the repo](#2-clone-the-repo)
+3. [Build and deploy the legacy application](#3-build-and-deploy-the-legacy-application)
+4. [Set up legacy database](#4-set-up-legacy-database)
+5. [View sample data](#5-view-sample-data)
 
 ## 1. Create an instance of DB2 database
 
