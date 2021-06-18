@@ -149,4 +149,121 @@ You can now view the sample data.
 
 ![sample_data](images/sample_data.gif)
 
+## 6. Login to CP4D SaaS offering and Create Services
+
+Access this [URL](https://dataplatform.cloud.ibm.com/registration/stepone?context=cpdaas&apps=all) to access CP4D SaaS offering. Select a region preferrably Dallas as DataStage service exists only in Dallas and Frankfurt region at the time of writing this code pattern. You must be having an active IBM Cloud account by now, so click on `Log in with your IBMid`. 
+
+![CP4D-login](images/cp4d-login.png)
+
+After login to your cloud account, it sets up the core services of Cloud Pak for you. Launch the SaaS offering by clicking `Go to IBM Cloud Pak for Data`. It takes you to the integrated dashboard where you can create projects and work with your data.
+
+On the dashboard, click on the hamburger menu and navigate to `Services Catalog` under Services. It shows the list of integrated services. You need to create the following services to execute this code pattern:
+
+* **Databases for PostgreSQL**
+
+  > Note: This code pattern uses PostgreSQL DB for the modernized application. You can setup your own PostgreSQL DB and provide connection details or use the service provided on IBM Public Cloud as shown here.
+
+  On the services catalog page, select `Databases` in Category, it will show list of available databases of which instance can be created on IBM Cloud. Choose `Database for PostgreSQL`. Provide the required values like region, service name, resource group. Rest all values are optional. You can proceed with the default values and click `Create`. Post this, it will create service instance on IBM Cloud and allows you to add more services. Click on `Add Service` and perform the steps as exaplined in next section.
+  
+* **Cloud Object Storage (COS)**
+
+  On the services catalog page, select `Storage` in Category and choose Cloud Object Storage. Choose the pricing plan, resource group and provide the service name, then click `Create`. Note that you can use `Lite` plan of this service for this code pattern. COS is required to save your assets and project details which we will be creating in later steps. Click on `Add Service` and perform the steps as exaplined in next section.
+  
+* **DataStage**
+
+  On the services catalog page, select `Analytics` in Category and choose DataStage. Select the region, resource group and provide the service name of your choice, then click `Create`. Note that you can use `Lite` plan of this service for this code pattern. This instance will be used to create DataStage flows for data replication. Click on `Add Service` and perform the steps as exaplined in next section.
+  
+* **Watson Assistant**
+
+  On the services catalog page, select `AI/Machine Learning` in Category and choose Watson Assistant. Select the region, resource group and provide the service name, then click `Create`. Note that you can use `Lite` plan of this service for this code pattern.
+  
+You have created all the required services of CP4D for this code pattern. You can read more about CP4D SaaS offering [here](https://www.ibm.com/products/cloud-pak-for-data/as-a-service).
+
+## 7. Get credentials of PostgreSQL database
+
+On the CP4D dashboard, click on the hamburger menu and navigate to `Service Instances` under Services. Choose the PostgreSQL instance. In left side panel, click `Service Credentials` and `New Credential`. Provide credentials name and click `Add`. The credentials will be created now. Make a note of the following values from the credential, these are required to create data connection for DataStage flows.
+
+```
+"hostname": "56cf0e7b-4xxx.databases.appdomain.cloud"
+"port": xxx
+"instance_id": "crn:v1:xxx16e::"
+"database": "xxx"
+"password": "9fd671xxxx0f"
+"username": "ibm_cloud_xxxx2"
+```
+
+## 8. Configure PostgreSQL database
+
+Use a client either [pgAdmin4]() or [psql]() to connect to the PostgreSQL database using the credentials created in previous step. Here, the steps are provided using `psql` CLI. 
+
+Execute the following steps to create a database and tables schema required before the data replication. The `.sql` files have been provided in this repository at `...` to create schema, check data and clean-up the database. Run the following command to create new db `demodb`, its schema and tables.
+
+```
+$ psql postgres://< username >:< password >@< db-hostname >:< port >/< database > -f cp-postgre-ddl.sql
+CREATE DATABASE
+psql (13.3, server 12.5)
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+You are now connected to database "demodb" as user "ibm_cloud_5e71779b_bab3_4cda_b460_82838f00a1a2".
+psql:cp-postgre-ddl.sql:3: NOTICE:  schema "public" already exists, skipping
+CREATE SCHEMA
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+```
+
+The tables created and its data(if any) can be checked using the following command:
+
+```
+psql postgres://< username >:< password >@< db-hostname >:< port >/< database > -f cp-postgre-getData.sql
+```
+
+After creating schema in PostgreSQL database, you are all set to create DataStage flows that is explained in next section.
+
+## 9. Import project in CP4D
+
+To design a DataStage flow, need to create a project, add data connections in project and then create DataStage flow. The following four DataStage flows are required for this code pattern.
+
+* *customer-data-replication-flow*: It replicates few columns from the `customer` table of DB2 database.
+* *customer_plan-data-replication-flow*: It replicates only those rows which gives information about the current plan is being used by a customer.
+* *plans-data-replication-flow*: It transform the plans related data as-is from DB2 to PostgreSQL.
+* *billing-data-replication-flow*: It replicates the customer billing data of last three months.
+
+This code pattern provides you a project to import which already has data assets and DataStage flows in it. Let's import the project.
+
+On the CP4D dashboard, click on the hamburger menu, navigate to `Home`. 
+
+* Click on `Projects` under `Quick Navigation` section and then `New Project +`. 
+* Choose to `create a project from a sample or file`.
+* Upload the `.zip` file located at xxx.
+* Provide the name of the project and define storage. For storage, use the COS instance created in previous step.
+* Then click on `Create`.
+
+![import-project](images/project-import.png)
+
+Wait until import gets completed. Once completed, navigate to `Assets` tab. It will show two database connections under `Data Assets` and four flows under `DataStage Flows` section.
+
+![imported-project](images/imported-project.png)
+
+Next, you need to update data assets with your databases connection details.
+
+### Update Data Assets
+
+* **db2-conn**: Click on `db2-conn` under `Data Assets`. Provide your database connection details and credentials. Then `Test connection`. `Save` it once the connection is successful.
+
+* **postgre-conn**: Click on `postgre-conn` under `Data Assets`. Use database name as `demodb`. Provide your database connection details and credentials. Then `Test connection`. `Save` it once the connection is successful.
+
+> Note: `Port is SSL-enabled` option is selected in provided connections. If your database does not support that option, please unselect and test.
+
+### Run DataStage Flows
+
+To start replication of the data in PostgreSQL DB, you need to run DataStage Flows. Click on a flow and then `run` the flow as shown below. Perform the same step for all four flows.
+
+![DS-Flow](images/run-ds-flow.png)
+
+Once all flows ran successfully, then the data in PostgreSQL DB tables can be verified using client.
+
+
+
 
