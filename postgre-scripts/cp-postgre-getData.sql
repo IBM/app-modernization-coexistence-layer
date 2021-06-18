@@ -1,0 +1,18 @@
+
+\connect demodb;
+
+-- set search_path to public;
+
+SELECT Table_name as TablesName from information_schema. tables where table_schema = 'public';
+
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'customer';
+SELECT * FROM CUSTOMER ORDER BY id;
+
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'customer_plan';
+SELECT * FROM CUSTOMER_PLAN ORDER BY customer_id;
+
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'plan';
+SELECT * FROM PLAN ORDER BY id;
+
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'billing';
+SELECT * FROM BILLING ORDER BY customer_id, bill_date;
