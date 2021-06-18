@@ -138,9 +138,13 @@ Please check if the application is accessible at http://app-legacy-xxxx.mybluemi
 
 ## Login to CP4D SaaS offering and Create Services
 
-Access this [URL](https://dataplatform.cloud.ibm.com/registration/stepone?context=cpdaas&apps=all) to access CP4D SaaS offering. Select a region preferrably Dallas as DataStage service exists only in Dallas and Frankfurt region at the time of writing this code pattern. You must be having an active IBM Cloud account by now, so click on `Log in with your IBMid`. After login to your cloud account, it sets up the core services of Cloud Pak for you. Launch the SaaS offering by clicking `Go to IBM Cloud Pak for Data`. It takes you to the integrated dashboard where you can create projects and work with your data.
+Access this [URL](https://dataplatform.cloud.ibm.com/registration/stepone?context=cpdaas&apps=all) to access CP4D SaaS offering. Select a region preferrably Dallas as DataStage service exists only in Dallas and Frankfurt region at the time of writing this code pattern. You must be having an active IBM Cloud account by now, so click on `Log in with your IBMid`. 
 
-On this dashboard, click on the hamburger menu and navigate to `Services Catalog` under Services. It shows the list of integrated services. You need to create the following services to execute this code pattern:
+![CP4D-login](images/cp4d-login.png)
+
+After login to your cloud account, it sets up the core services of Cloud Pak for you. Launch the SaaS offering by clicking `Go to IBM Cloud Pak for Data`. It takes you to the integrated dashboard where you can create projects and work with your data.
+
+On the dashboard, click on the hamburger menu and navigate to `Services Catalog` under Services. It shows the list of integrated services. You need to create the following services to execute this code pattern:
 
 * **Databases for PostgreSQL**
 
@@ -179,10 +183,21 @@ On the CP4D dashboard, click on the hamburger menu and navigate to `Service Inst
 
 Use a client either [pgAdmin4]() or [psql]() to connect to the PostgreSQL database using the credentials created in previous step. Here, the steps are provided using `psql` CLI. 
 
-Execute the following steps to create a database and tables schema required before the data replication. A `.sql` file has been provided in this repository at `...`.
+Execute the following steps to create a database and tables schema required before the data replication. The `.sql` files have been provided in this repository at `...` to create schema, check data and clean-up the database. Run the following command to create new db `demodb`, its schema and tables.
 
 ```
-psql postgres://< username >:< password >@< db-hostname >:< port >/< database > -f cp-postgre-ddl.sql
+$ psql postgres://< username >:< password >@< db-hostname >:< port >/< database > -f cp-postgre-ddl.sql
+CREATE DATABASE
+psql (13.3, server 12.5)
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+You are now connected to database "demodb" as user "ibm_cloud_5e71779b_bab3_4cda_b460_82838f00a1a2".
+psql:cp-postgre-ddl.sql:3: NOTICE:  schema "public" already exists, skipping
+CREATE SCHEMA
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
 ```
 
 The tables created and its data(if any) can be checked using the following command:
@@ -191,26 +206,50 @@ The tables created and its data(if any) can be checked using the following comma
 psql postgres://< username >:< password >@< db-hostname >:< port >/< database > -f cp-postgre-getData.sql
 ```
 
-## Import project
+After creating schema in PostgreSQL database, you are all set to create DataStage flows that is explained in next section.
+
+## Import project in CP4D
+
+To design a DataStage flow, need to create a project, add data connections in project and then create DataStage flow. The following four DataStage flows are required for this code pattern.
+
+* *customer-data-replication-flow*: It replicates few columns from the `customer` table of DB2 database.
+* *customer_plan-data-replication-flow*: It replicates only those rows which gives information about the current plan is being used by a customer.
+* *plans-data-replication-flow*: It transform the plans related data as-is from DB2 to PostgreSQL.
+* *billing-data-replication-flow*: It replicates the customer billing data of last three months.
+
+This code pattern provides you a project to import which already has data assets and DataStage flows in it. Let's import the project.
 
 On the CP4D dashboard, click on the hamburger menu, navigate to `Home`. 
+
 * Click on `Projects` under `Quick Navigation` section and then `New Project +`. 
 * Choose to `create a project from a sample or file`.
-* Provide the sample file located at xxx.
+* Upload the `.zip` file located at xxx.
 * Provide the name of the project and define storage. For storage, use the COS instance created in previous step.
-* Create/Import.
+* Then click on `Create`.
 
-Wait until import gets completed. Once done, navigate to `Assets` tab. It will show 2 dtabase connections and 4 DataStage flows.
+![import-project](images/project-import.png)
 
-< image >
+Wait until import gets completed. Once completed, navigate to `Assets` tab. It will show two database connections under `Data Assets` and four flows under `DataStage Flows` section.
 
-Update the connection details:
+![imported-project](images/imported-project.png)
 
-* db2-conn
-* postgre-conn
+Next, you need to update data assets with your databases connection details.
 
-> Note: `Port is SSL-enabled` option is selected, because of which connection may fail. If your database does not support that option, please unselect and test.
+### Update Data Assets
 
+* **db2-conn**: Click on `db2-conn` under `Data Assets`. Provide your database connection details and credentials. Then `Test connection`. `Save` it once the connection is successful.
+
+* **postgre-conn**: Click on `postgre-conn` under `Data Assets`. Use database name as `demodb`. Provide your database connection details and credentials. Then `Test connection`. `Save` it once the connection is successful.
+
+> Note: `Port is SSL-enabled` option is selected in provided connections. If your database does not support that option, please unselect and test.
+
+### Run DataStage Flows
+
+To start replication of the data in PostgreSQL DB, you need to run DataStage Flows. Click on a flow and then `run` the flow as shown below. Perform the same step for all four flows.
+
+![DS-Flow](images/run-ds-flow.png)
+
+Once all flows ran successfully, then the data in PostgreSQL DB tables can be verified using client.
 
 
 
