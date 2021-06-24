@@ -1,13 +1,13 @@
-# Digital Decoupling Layer for Cloud Modernization
+# Digital Decoupling Layer for Cloud Modernization using Cloud Pak for Data
 
 Cloud Modernization at scale can be disruptive and clients prefer to start the journey that incrementally transition them to reach them to required digital maturity. This can be made possible by developing a co-existing layer that operates alongside core business application and database. Digital decoupling can also be seen as a coexistence layer that helps clients to incrementally tranistion to the future state with minimal or no disruption to the existing technology stack. There are numerous usecases that can be made possible using the decoupling layer, one such is the customer empowerment and smart front office application.  
 
-In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies but without disrupting the existing legacy system. The legacy system uses a DB2 database and is the system of record. The new chatbot system uses a Postgresql database. A subset of data needed by the chatbot system is replicated to the Postgresql database using [IBM Data Stage](https://www.ibm.com/in-en/products/infosphere-datastage). 
+In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies and capabilities of Cloud pak for Data (CP4D) but without disrupting the existing legacy system. The legacy system uses a DB2 database and is the system of record. The new chatbot system uses a Postgresql database. A subset of data needed by the chatbot system is replicated to the PostgreSQL database using [IBM DataStage](https://www.ibm.com/in-en/products/infosphere-datastage). 
 
 When you have completed this code pattern, you will understand how to:
-- Create Datastage flows and jobs for data replication
+- Create DataStage flows for data replication using Cloud Pak for Data (CP4D)
 - Create a chatbot using [Watson Assistant](https://www.ibm.com/cloud/watson-assistant/)
-- Create [cloud functions](https://cloud.ibm.com/functions/) in Watson Assistant to query databases
+- Create [Cloud functions](https://cloud.ibm.com/functions/) in Watson Assistant to query databases
 
 ## Flow
 
@@ -16,17 +16,17 @@ When you have completed this code pattern, you will understand how to:
 1. The employee performs one of many actions like create new mobile plan, enter new customer information or generate billing for customers.
 2. The data is stored in the DB2 database.
 3. Datastage reads data from DB2 database.
-4. Datastage replicates the data in the Postgresql database.
-5. A customer queries for billing information, data usage and recommendations.
-6. Watson Assistant invokes Cloud Functions for the queries.
-7. Cloud functions queries Postgresql for data, processes the data and returns the response to Watson Assistant.
+4. Datastage replicates the data in the PostgreSQL database.
+5. A customer queries for billing information, data usage and recommendations through chatbot.
+6. Watson Assistant chatbot invokes Cloud Functions for the queries.
+7. Cloud functions queries PostgreSQL for data, processes the data and returns the response to Watson Assistant.
 
 ## Prerequisites
 1. [IBM Cloud Account](https://cloud.ibm.com)
-1. [IBM Cloud CLI](https://cloud.ibm.com/docs/cli?topic=cli-getting-started)
-1. [IBM Cloud Pak for Data](https://cloud.ibm.com/catalog/content/ibm-cp-datacore-6825cc5d-dbf8-4ba2-ad98-690e6f221701-global)
+2. [IBM Cloud CLI](https://cloud.ibm.com/docs/cli?topic=cli-getting-started)
 3. [Java](https://www.java.com/en/)
 4. [Maven](https://maven.apache.org/)
+5. [Git Client](https://git-scm.com/downloads)
 
 ## Steps
 
@@ -35,8 +35,16 @@ When you have completed this code pattern, you will understand how to:
 3. [Build and deploy the legacy application](#3-build-and-deploy-the-legacy-application)
 4. [Set up legacy database](#4-set-up-legacy-database)
 5. [View sample data](#5-view-sample-data)
+6. [Login to CP4D SaaS and Create Services](#6-login-to-cp4d-saas-and-create-services)
+7. [Get Credentials of PostgreSQL database](#7-get-credentials-of-postgresql-database)
+8. [Setup PostgreSQL database](#8-setup-postgresql-database)
+9. [Import project in CP4D](#9-import-project-in-cp4d)
+10. [Setup chatbot application](#10-setup-chatbot-application)
+11. [Analyze the results](#11-analyze-the-results)
 
 ## 1. Create an instance of DB2 database
+
+As explained before, the legacy application uses a DB2 database. This code pattern uses DB2 service on IBM Cloud for easy demonstration in this code pattern. Follow the below steps to create DB2 instance on IBM Cloud.
 
 Login to IBM Cloud:
 ```
@@ -71,7 +79,7 @@ Last Operation:
 ```
 Make a note of the GUID. It is needed in the next step.
 
-Run the below command to create service credentials:
+Run the below command to create service credentials. The service credentials will be used later.
 ```
 ibmcloud resource service-key-create skey --instance-id [GUID of DB2]
 ```
@@ -148,7 +156,7 @@ You can now view the sample data.
 
 ![sample_data](images/sample_data.gif)
 
-## 6. Login to CP4D SaaS offering and Create Services
+## 6. Login to CP4D SaaS and Create Services
 
 Access this [URL](https://dataplatform.cloud.ibm.com/registration/stepone?context=cpdaas&apps=all) to access CP4D SaaS offering. Select a region preferrably Dallas as DataStage service exists only in Dallas and Frankfurt region at the time of writing this code pattern. You must be having an active IBM Cloud account by now, so click on `Log in with your IBMid`. 
 
@@ -156,7 +164,11 @@ Access this [URL](https://dataplatform.cloud.ibm.com/registration/stepone?contex
 
 After login to your cloud account, it sets up the core services of Cloud Pak for you. Launch the SaaS offering by clicking `Go to IBM Cloud Pak for Data`. It takes you to the integrated dashboard where you can create projects and work with your data.
 
-On the dashboard, click on the hamburger menu and navigate to `Services Catalog` under Services. It shows the list of integrated services. You need to create the following services to execute this code pattern:
+On the dashboard, click on the hamburger menu and navigate to `Services Catalog` under Services. 
+
+![CP4D-service-catalog](images/cp4d-service-catalog.png)
+
+It shows the list of integrated services. You need to create the following services to execute this code pattern:
 
 * **Databases for PostgreSQL**
 
@@ -166,11 +178,11 @@ On the dashboard, click on the hamburger menu and navigate to `Services Catalog`
   
 * **Cloud Object Storage (COS)**
 
-  On the services catalog page, select `Storage` in Category and choose Cloud Object Storage. Choose the pricing plan, resource group and provide the service name, then click `Create`. Note that you can use `Lite` plan of this service for this code pattern. COS is required to save your assets and project details which we will be creating in later steps. Click on `Add Service` and perform the steps as exaplined in next section.
+  On the services catalog page, select `Storage` in Category and choose Cloud Object Storage. Choose the pricing plan, resource group and provide the service name, then click `Create`. Note that you can use `Lite` plan of this service for this code pattern. COS is required to save your assets and project details which we will be creating in later steps. Click on `Add Service` to add more services.
   
 * **DataStage**
 
-  On the services catalog page, select `Analytics` in Category and choose DataStage. Select the region, resource group and provide the service name of your choice, then click `Create`. Note that you can use `Lite` plan of this service for this code pattern. This instance will be used to create DataStage flows for data replication. Click on `Add Service` and perform the steps as exaplined in next section.
+  On the services catalog page, select `Analytics` in Category and choose DataStage. Select the region, resource group and provide the service name of your choice, then click `Create`. You can use `Lite` plan of this service for this code pattern. This instance will be used to create DataStage flows for data replication. Click on `Add Service` to add next service.
   
 * **Watson Assistant**
 
@@ -178,7 +190,7 @@ On the dashboard, click on the hamburger menu and navigate to `Services Catalog`
   
 You have created all the required services of CP4D for this code pattern. You can read more about CP4D SaaS offering [here](https://www.ibm.com/products/cloud-pak-for-data/as-a-service).
 
-## 7. Get credentials of PostgreSQL database
+## 7. Get Credentials of PostgreSQL database
 
 On the CP4D dashboard, click on the hamburger menu and navigate to `Service Instances` under Services. Choose the PostgreSQL instance. In left side panel, click `Service Credentials` and `New Credential`. Provide credentials name and click `Add`. The credentials will be created now. Make a note of the following values from the credential, these are required to create data connection for DataStage flows.
 
@@ -191,11 +203,11 @@ On the CP4D dashboard, click on the hamburger menu and navigate to `Service Inst
 "username": "ibm_cloud_xxxx2"
 ```
 
-## 8. Configure PostgreSQL database
+## 8. Setup PostgreSQL database
 
 Use a client either [pgAdmin4]() or [psql]() to connect to the PostgreSQL database using the credentials created in previous step. Here, the steps are provided using `psql` CLI. 
 
-Execute the following steps to create a database and tables schema required before the data replication. The `.sql` files have been provided in this repository at `...` to create schema, check data and clean-up the database. Run the following command to create new db `demodb`, its schema and tables.
+Execute the following steps to create a database and tables schema that is required before the data replication. The `.sql` files have been provided in this repository at `app-modernization-coexistence-layer/postgre-scripts` to create tables and its schema, to check data and to clean-up the database. Run the following command to create new db `demodb`, its schema and tables.
 
 ```
 $ psql postgres://< username >:< password >@< db-hostname >:< port >/< database > -f cp-postgre-ddl.sql
@@ -229,14 +241,14 @@ To design a DataStage flow, need to create a project, add data connections in pr
 * *plans-data-replication-flow*: It transform the plans related data as-is from DB2 to PostgreSQL.
 * *billing-data-replication-flow*: It replicates the customer billing data of last three months.
 
-This code pattern provides you a project to import which already has data assets and DataStage flows in it. Let's import the project.
+This code pattern provides you a project to import that has data assets and DataStage flows already created for you. Let's import the project.
 
 On the CP4D dashboard, click on the hamburger menu, navigate to `Home`. 
 
 * Click on `Projects` under `Quick Navigation` section and then `New Project +`. 
 * Choose to `create a project from a sample or file`.
-* Upload the `.zip` file located at xxx.
-* Provide the name of the project and define storage. For storage, use the COS instance created in previous step.
+* Upload the `.zip` file located at `app-modernization-coexistence-layer/datastage`.
+* Provide the name of the project (say demo) and define storage. For storage, use the COS instance created in step6.
 * Then click on `Create`.
 
 ![import-project](images/project-import.png)
@@ -249,11 +261,11 @@ Next, you need to update data assets with your databases connection details.
 
 ### Update Data Assets
 
-* **db2-conn**: Click on `db2-conn` under `Data Assets`. Provide your database connection details and credentials. Then `Test connection`. `Save` it once the connection is successful.
+* **db2-conn**: Click on `db2-conn` under `Data Assets`. Provide your database connection details and credentials which was created in step1. Then `Test connection`. `Save` it once the connection is successful.
 
-* **postgre-conn**: Click on `postgre-conn` under `Data Assets`. Use database name as `demodb`. Provide your database connection details and credentials. Then `Test connection`. `Save` it once the connection is successful.
+* **postgre-conn**: Click on `postgre-conn` under `Data Assets`. Use database name as `demodb`. Provide your database connection details and credentials as noted in step7. Then `Test connection`. `Save` it once the connection is successful.
 
-> Note: `Port is SSL-enabled` option is selected in provided connections. If your database does not support that option, please unselect and test.
+> Note: `Port is SSL-enabled` option is selected in provided connections. If your database does not support that option, please unselect that and test.
 
 ### Run DataStage Flows
 
@@ -261,8 +273,7 @@ To start replication of the data in PostgreSQL DB, you need to run DataStage Flo
 
 ![DS-Flow](images/run-ds-flow.png)
 
-Once all flows ran successfully, then the data in PostgreSQL DB tables can be verified using client.
-
+Once all flows ran successfully, then the data in PostgreSQL DB tables can be verified using client. As a next step, we will work on chatbot.
 
 ## 10. Setup chatbot application
 
@@ -347,7 +358,7 @@ Login to IBM Cloud. On the dashboard, click on the hamburger menu and click `Res
 
 On the Watson Assistant dashboard, on the left side of the screen click on `skills` icon. Click `Create skill` button. Select `Dialog skill` and click `Next`. 
 
-Select `Upload skill` tab. The skill file is available if your cloned GitHub repo in the path `cloned parent directory/sources/chatbot/dialog.json`. Click `Drag and drop file here or click to select a file` and select the skill file. Click `Upload`.
+Select `Upload skill` tab. The skill file is available if your cloned GitHub repo in the path `app-modernization-coexistence-layer/sources/chatbot/dialog.json`. Click `Drag and drop file here or click to select a file` and select the skill file. Click `Upload`.
 
 The dialog skill should be imported now. Next, click `Options` on left navigation menu for the skill. `Webhooks` under `Options` is selected by default. On this page under `URL`, enter the Webhook url you copied in the above section and append the URL with `.json`.
 **Note: Append the url with .json extension. Without the extension, functions won't be called**
@@ -357,7 +368,7 @@ Next, click `Assistants` option available on the top left side of the Watson Ass
 
 In the next window, click `Add an action or dialog skill`. In `Add Actions or Dialog skill` click on the skill that you created earlier.
 
-### See the results
+## 11. Analyze the results
 Now that all the components are ready, we can launch the chatbot and check the behavior of the application. If you have moved away to any other page on IBM Cloud dashbboard, then launch Watson Assistant and click on `Assistants` icon on top left of the screen. Click on the assistant you created earlier. Click the `Preview` button on top right to launch default application provided by Watson Assistant.
 
 ![Chatbot App](images/chatbot-app.png)
@@ -369,3 +380,10 @@ You can share the preview link with others to run the chabot application. You ca
 Sample flow of chatbot is as shown in the below video
 
 https://user-images.githubusercontent.com/25784779/123210045-1597d680-d4df-11eb-8656-5ec22d9c17ff.mp4
+
+## License
+
+This code pattern is licensed under the Apache License, Version 2. Separate third-party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1](https://developercertificate.org/) and the [Apache License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
+
+[Apache License FAQ](https://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
+
