@@ -5,28 +5,35 @@ const pg = require("pg");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-let vcapLocal = getVCAPLocal();
-let caCert = new Buffer(vcapLocal.connection.postgres.certificate.certificate_base64, 'base64');
-let connectionString = vcapLocal.connection.postgres.composed[0];
-console.log("DB Connection String: " + connectionString);
+var client;
+let legacy_app_url = "http://xxxx/telecom/apis/changeplan";
 
-const parse = require('pg-connection-string').parse;
-let config = parse(connectionString);
+async function db_connect() {
+  return new Promise(function (resolve, reject) {
+    let vcapLocal = getVCAPLocal();
+    let caCert = new Buffer(vcapLocal.connection.postgres.certificate.certificate_base64, 'base64');
+    let connectionString = vcapLocal.connection.postgres.composed[0];
+    console.log("DB Connection String: " + connectionString);
 
-config.ssl = {
-  ca: caCert
+    const parse = require('pg-connection-string').parse;
+    let config = parse(connectionString);
+
+    config.ssl = {
+      ca: caCert
+    }
+
+    client = new pg.Client(config); client.connect(function (err) {
+      if (err) {
+        console.log(err);
+        reject(error);
+        process.exit(1);
+      } else {
+        console.log("CONNECTION ESTABLISHED");
+        resolve("CONNECTION ESTABLISHED");
+      }
+    });
+  });
 }
-
-let client = new pg.Client(config);
-
-client.connect(function (err) {
-  if (err) {
-    console.log(err);
-    process.exit(1);
-  } else {
-    console.log("CONNECTION ESTABLISHED");
-  }
-});
 
 current_plan_query = "SELECT a.name, a.description, a.data_limit, a.cost  from public.plan as a, public.customer_plan as b, public.customer as c WHERE a.id = b.plan_id AND b.customer_id = c.id AND c.mobile = $1";
 latest_bill_query = "SELECT b.amount, max(b.bill_date), b.usage from public.customer as a, public.billing as b where a.mobile = $1 and a.id = b.customer_id group by b.amount, b.usage";
@@ -38,8 +45,11 @@ average_usage_query = "SELECT AVG(usage) from billing, customer where billing.cu
 let currency_notation = "$";
 let data_size_notation = "GB";
 
-function queryDB(query, mobile_no) {
-  console.log("Mobile no: " + mobile_no);
+async function queryDB(query, mobile_no) {
+  if( !client ){
+    await db_connect();
+  }
+    console.log("Mobile no: " + mobile_no);
   console.log("DB query: " + query);
   return new Promise(function (resolve, reject) {
     client.query(
@@ -56,6 +66,7 @@ function queryDB(query, mobile_no) {
     );
   });
 }
+
 
 async function main(data) {
   console.log("");
@@ -89,6 +100,7 @@ async function main(data) {
           "Month": getMontYear(result.rows[0].max),
           "Usage": result.rows[0].usage + " " + data_size_notation
         };
+        // Your latest bill details are as follows:<br>Bill Month: $webhook_result_1.Month<br>Usage: $webhook_result_1.Usage<br>Amount: $webhook_result_1.Amount
         var rStr = "Your latest bill details are as follows:<br>Bill Month: " + getMontYear(result.rows[0].max);
         rStr = rStr + "<br>Usage: " + result.rows[0].usage + " " + data_size_notation;
         rStr = rStr + "<br>Amount: " + currency_notation + result.rows[0].amount;
@@ -133,11 +145,11 @@ async function main(data) {
       if (isDataFound(result)) {
         salutation = result.rows[0].salutation.includes(".") ? result.rows[0].salutation : result.rows[0].salutation + ".";
         var rStr = "Welcome, ";
-        rStr = rStr + salutation + " " + result.rows[0].first_name + " " + result.rows[0].last_name + ".";
+        rStr = rStr + salutation + " " + result.rows[0].first_name + " " + result.rows[0].last_name + ". ";
         rStr = rStr + "How can I help you today?"
         console.log("Response data: " + JSON.stringify(response));
 
-        return {"response": rStr, "isMobileNumValid": 1};
+        return { "response": rStr, "isMobileNumValid": 1 };
       } else {
         console.log("Mobile number entered is incorrect");
         var rStr = "Mobile number entered is incorrect."
@@ -189,6 +201,7 @@ async function main(data) {
     }
   }
   else if (data.request_type === 'UPDATE_PLAN') {
+    console.log("In update plan");
     const response = await updatePlan(data);
     return response;
   }
@@ -198,12 +211,12 @@ async function main(data) {
   }
 }
 
-async function updatePlan(data){
-  return new Promise(function(resolve, reject){
+async function updatePlan(data) {
+  return new Promise(function (resolve, reject) {
     var request = require('request');
     var options = {
       'method': 'POST',
-      'url': vcapLocal.legacy_app_url,
+      'url': legacy_app_url,
       'headers': {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -215,10 +228,10 @@ async function updatePlan(data){
     request(options, function (error, response) {
       if (error) {
         console.log("Error occurred while updating plan details");
-        reject({"response": "Error occurred while updating plan details"});
+        reject({ "response": "Error occurred while updating plan details" });
       }
       console.log("Update plan request response: " + response.body);
-      resolve({"response": response.body});
+      resolve({ "response": "Plan update request submitted successfully." });
     });
   });
 }
@@ -238,12 +251,60 @@ module.exports = app;
 function getVCAPLocal() {
   let vcapLocal = {
     "connection": {
-    	.
-    	.
-    	.
+      "cli": {
+        "arguments": [
+          [
+            "host=xxxxxx port=xxxxx dbname=ibmclouddb user=xxxx sslmode=verify-full"
+          ]
+        ],
+        "bin": "psql",
+        "certificate": {
+          "certificate_base64": "xxxxxxxxxxxxxxxxxxxxxxx",
+          "name": "xxxx"
+        },
+        "composed": [
+          "PGPASSWORD=xxxx psql 'host=xxxxx port=xxxx dbname=ibmclouddb user=xxxx sslmode=verify-full'"
+        ],
+        "environment": {
+          "PGPASSWORD": "xxxx",
+          "PGSSLROOTCERT": "xxxx"
+        },
+        "type": "cli"
+      },
+      "postgres": {
+        "authentication": {
+          "method": "direct",
+          "password": "xxxx",
+          "username": "xxxx"
+        },
+        "certificate": {
+          "certificate_base64": "xxxxxxxxxxx",
+          "name": "xxxxx"
+        },
+        "composed": [
+          "postgres://xxxxx:xxxxx@xxxx:xxxxx/demodb?sslmode=verify-full"
+        ],
+        "database": "ibmclouddb",
+        "hosts": [
+          {
+            "hostname": "xxxx",
+            "port": xxxx
+          }
+        ],
+        "path": "/ibmclouddb",
+        "query_options": {
+          "sslmode": "verify-full"
+        },
+        "scheme": "postgres",
+        "type": "uri"
+      }
     },
-    "legacy_app_url": "<your legacy application update plan URL>"
-  };
+    "instance_administration_api": {
+      "deployment_id": "xxxx:a/xxx::",
+      "instance_id": "xxxx",
+      "root": "https://xxxx"
+    }
+  }
   return vcapLocal;
 }
 
