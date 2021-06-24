@@ -3,12 +3,12 @@
 
 Cloud Modernization at scale can be disruptive and clients prefer to start the journey that incrementally transition them to reach them to required digital maturity. This can be made possible by developing a co-existing layer that operates alongside core business application and database. Digital decoupling can also be seen as a coexistence layer that helps clients to incrementally tranistion to the future state with minimal or no disruption to the existing technology stack. There are numerous usecases that can be made possible using the decoupling layer, one such is the customer empowerment and smart front office application.  
 
-In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies but without disrupting the existing legacy system. The legacy system uses a DB2 database and is the system of record. The new chatbot system uses a Postgresql database. A subset of data needed by the chatbot system is replicated to the Postgresql database using [IBM Data Stage](https://www.ibm.com/in-en/products/infosphere-datastage).
+In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies but without disrupting the existing legacy system. The legacy system uses a DB2 database and is the system of record. The new chatbot system uses a Postgresql database. A subset of data needed by the chatbot system is replicated to the Postgresql database using [IBM Data Stage](https://www.ibm.com/in-en/products/infosphere-datastage). 
 
 When you have completed this code pattern, you will understand how to:
 - Create Datastage flows and jobs for data replication
-- Create a chatbot using Watson Assistant
-- Create cloud functions in Watson Assistant to query databases
+- Create a chatbot using [Watson Assistant](https://www.ibm.com/cloud/watson-assistant/)
+- Create [cloud functions](https://cloud.ibm.com/functions/) in Watson Assistant to query databases
 
 ## Flow
 
@@ -265,5 +265,107 @@ To start replication of the data in PostgreSQL DB, you need to run DataStage Flo
 Once all flows ran successfully, then the data in PostgreSQL DB tables can be verified using client.
 
 
+## 10. Setup chatbot application
 
+Until now you have setup a legacy application and have replicated the legacy database to a modern database, PostgreSQL. Next we will build a chatbot application, using Watson Assistant and IBM Cloud Functions, to fetch data from the modern database.
 
+### Capture service credentials of PostgreSQL database
+
+The cloud functions fetch data from PostgreSQL database. You will need to provide PostgreSQL service credentials to cloud functions.
+
+Login to your IBM Cloud account. Navigate to [resources list](https://cloud.ibm.com/resources). Click on the PostgreSQL service that was created earlier. On the top left side of the page, click on `Service credentials`. Copy the existing service credentials by clicking on the `Copy to clipboard` icon and save it in a text file. 
+
+The default database in this credentials could be different than the one that is used for this code pattern. In this credentials, under `postgres`->`composed`->`postgres` field update the database name as `demodb`, the database name used in PostgreSQL.
+
+![Update DB name](images/update-db-in-credentials.png)
+
+This credentials will be used in the next section.
+
+### Create Cloud Functions Action
+
+Login to your IBM Cloud account. On the dashboard, click on the hamburger menu and navigate to `Functions` and click on `Actions`.
+
+Click the `Create` button to create a new action. Select the tile with heading `Action`.
+
+Enter a name for action under `Action Name`. Leave `Enclosing Package` as `(Default Package)` itself. Under `Runtime` select option for Node.js. 
+
+![Create Action](images/create-action.png)
+
+Click on `Create` button. You are presented with actions code editor. Replace the existing code with the javascript code [here](https://github.com/IBM/app-modernization-coexistence-layer/blob/main/sources/chatbot/cloudfunctions.js).
+
+This code connects to PostgreSQL database as well as Legacy application's **Update Plan** api. You will need to update code with the right credentials. In the function `getVCAPLocal` (towards the end of the javascript file), provide PostgreSQL credentials copied and edited, in the above section, in the variable `vcapLocal` (replace the existing double quotes). It will look something like this - 
+
+```
+function getVCAPLocal() {
+  let vcapLocal = {
+    "connection": {
+      "cli": {
+        "arguments": ..,
+        "bin": "psql",
+        "certificate": {
+          ..
+        },
+        .
+        .
+      },
+      "postgres": {
+        "authentication": {
+          "method": "direct",
+          "password": "xxxx",
+          "username": "xxxx"
+        },
+        "certificate": {
+          ..
+        },
+        "composed": [
+          "postgres://xxxxx:xxxxx@xxxx:xxxxx/demodb?sslmode=verify-full"
+        ],
+        .
+        .
+      }
+    },
+    .
+    .
+  }
+  return vcapLocal;
+}
+```
+
+Next, in the javascript code, update the value of variable `legacy_app_url` (you will find it in the beginning of the file) to the `changeplan` url which was noted in legacy app setup section.
+
+Click `Save` button on the top right of the code editor. 
+
+### Enable cloud function action as web action
+
+For the action just created, click `Endpoints` on the left side navigation menu. Select the checkbox `Enable as Web Action`. Click the `Save` button on the right top corner. When saved, `Copy web action url` icon, under `Web Action` section is enabled. Click the icon to copy the webhook url. This URL will be used in Watson Assistant for it to call the actions in Cloud Functions.
+
+![Webhook URL](images/webhook-url.png)
+
+### Setup Watson Assistant Chatbot
+
+Login to IBM Cloud. On the dashboard, click on the hamburger menu and click `Resource List`. Click on the Watson Assistant instance that you created earlier. Then click on `Launch Watson Assistant` button to launch Watson Assistant dashboard.
+
+On the Watson Assistant dashboard, on the left side of the screen click on `skills` icon. Click `Create skill` button. Select `Dialog skill` and click `Next`. 
+
+Select `Upload skill` tab. The skill file is available if your cloned GitHub repo in the path `cloned parent directory/sources/chatbot/dialog.json`. Click `Drag and drop file here or click to select a file` and select the skill file. Click `Upload`.
+
+The dialog skill should be imported now. Next, click `Options` on left navigation menu for the skill. `Webhooks` under `Options` is selected by default. On this page under `URL`, enter the Webhook url you copied in the above section and append the URL with `.json`.
+**Note: Append the url with .json extension. Without the extension, functions won't be called**
+The entered details are saved automatically.
+
+Next, click `Assistants` option available on the top left side of the Watson Assistant dashboard. Click `Create assistant`. In `Create Assistant` window, under `Name` enter a name for the assistant. Optionally enter a description and click the `Create assistant` button. 
+
+In the next window, click `Add an action or dialog skill`. In `Add Actions or Dialog skill` click on the skill that you created earlier.
+
+### See the results
+Now that all the components are ready, we can launch the chatbot and check the behavior of the application. If you have moved away to any other page on IBM Cloud dashbboard, then launch Watson Assistant and click on `Assistants` icon on top left of the screen. Click on the assistant you created earlier. Click the `Preview` button on top right to launch default application provided by Watson Assistant.
+
+![Chatbot App](images/chatbot-app.png)
+
+You can share the preview link with others to run the chabot application. You can start chatting with the chatbot to fetch telecom customer information.
+
+>Authentication of mobile numbers is not implemented in this code pattern to keep things simple. If you are interested in authenticating user mobile numbers, check this [code pattern](https://developer.ibm.com/patterns/authenticate-users-on-your-chatbot-with-sms-one-time-passcode-otp/)
+
+Sample flow of chatbot is as shown in the below video
+
+https://user-images.githubusercontent.com/25784779/123210045-1597d680-d4df-11eb-8656-5ec22d9c17ff.mp4
