@@ -366,6 +366,6 @@ You can share the preview link with others to run the chabot application. You ca
 
 >Authentication of mobile numbers is not implemented in this code pattern to keep things simple. If you are interested in authenticating user mobile numbers, check this [code pattern](https://developer.ibm.com/patterns/authenticate-users-on-your-chatbot-with-sms-one-time-passcode-otp/)
 
-Sample flow of chatbot is as shown in the below gif
+Sample flow of chatbot is as shown in the below video
 
-![WA Demo](images/wa-demo.mp4)
+https://user-images.githubusercontent.com/25784779/123210045-1597d680-d4df-11eb-8656-5ec22d9c17ff.mp4
