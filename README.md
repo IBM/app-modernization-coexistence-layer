@@ -1,4 +1,3 @@
-(WORK IN PROGRESS)
 # Digital Decoupling Layer for Cloud Modernization
 
 Cloud Modernization at scale can be disruptive and clients prefer to start the journey that incrementally transition them to reach them to required digital maturity. This can be made possible by developing a co-existing layer that operates alongside core business application and database. Digital decoupling can also be seen as a coexistence layer that helps clients to incrementally tranistion to the future state with minimal or no disruption to the existing technology stack. There are numerous usecases that can be made possible using the decoupling layer, one such is the customer empowerment and smart front office application.  
@@ -331,7 +330,8 @@ function getVCAPLocal() {
 }
 ```
 
-Next, in the javascript code, update the value of variable `legacy_app_url` (you will find it in the beginning of the file) to the `changeplan` url which was noted in legacy app setup section.
+Next, in the javascript code, update the value of variable `legacy_app_url` (you will find it in the beginning of the file) to the `changeplan` url. The `changeplan` url will be http://app-legacy-xxxx.mybluemix.net/telecom/apis/changeplan.
+>Note: the base url http://app-legacy-xxxx.mybluemix.net was noted in the legacy application setup 
 
 Click `Save` button on the top right of the code editor. 
 
