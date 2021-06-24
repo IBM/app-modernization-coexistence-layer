@@ -273,7 +273,7 @@ To start replication of the data in PostgreSQL DB, you need to run DataStage Flo
 
 ![DS-Flow](images/run-ds-flow.png)
 
-Once all flows ran successfully, then the data in PostgreSQL DB tables can be verified using client. As a next step, we will work on chatbot.
+Once all flows ran successfully, then the data in PostgreSQL DB tables can be verified using client. If you want to schedule the flows to run, that can be achieved using `Project > Jobs > Choose a Job to be scheduled > Edit Configuration > Schedule`. As a next step, we will work on chatbot.
 
 ## 10. Setup chatbot application
 
@@ -369,6 +369,7 @@ Next, click `Assistants` option available on the top left side of the Watson Ass
 In the next window, click `Add an action or dialog skill`. In `Add Actions or Dialog skill` click on the skill that you created earlier.
 
 ## 11. Analyze the results
+
 Now that all the components are ready, we can launch the chatbot and check the behavior of the application. If you have moved away to any other page on IBM Cloud dashbboard, then launch Watson Assistant and click on `Assistants` icon on top left of the screen. Click on the assistant you created earlier. Click the `Preview` button on top right to launch default application provided by Watson Assistant.
 
 ![Chatbot App](images/chatbot-app.png)
@@ -380,6 +381,10 @@ You can share the preview link with others to run the chabot application. You ca
 Sample flow of chatbot is as shown in the below video.
 
 https://user-images.githubusercontent.com/25784779/123210045-1597d680-d4df-11eb-8656-5ec22d9c17ff.mp4
+
+If you submit a request to change the plan then that request goes to the legacy application. To make that change in modern database, replication has to happen i.e. you need to run DataStage flows manually if not scheduled. Post that if you query through chatbot, it will show the latest updated plan. The same is shown in the video.
+
+As a next step, you can add a new user using legacy application interface. Replicate the data using DataStage flow and query using your number in chatbot. If previous two steps are successful then chatbot should respond with your name else it will say `Mobile number is not correct` and then accordingly you can check plan, its usage etc. Like this you can verify an end-to-end working flow.
 
 ## License
 
