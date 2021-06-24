@@ -2,7 +2,7 @@
 
 Cloud Modernization at scale can be disruptive and clients prefer to start the journey that incrementally transition them to reach them to required digital maturity. This can be made possible by developing a co-existing layer that operates alongside core business application and database. Digital decoupling can also be seen as a coexistence layer that helps clients to incrementally tranistion to the future state with minimal or no disruption to the existing technology stack. There are numerous usecases that can be made possible using the decoupling layer, one such is the customer empowerment and smart front office application.  
 
-In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies and capabilities of Cloud pak for Data (CP4D) but without disrupting the existing legacy system. The legacy system uses a DB2 database and is the system of record. The new chatbot system uses a Postgresql database. A subset of data needed by the chatbot system is replicated to the PostgreSQL database using [IBM DataStage](https://www.ibm.com/in-en/products/infosphere-datastage). 
+In this code pattern, we will take the scenario of a telecom company that provides mobile network services. The company has a legacy application with a number of functional modules for customer information management, mobile plans management, inventory management and billing. The telecom company now wants to build a new system of engagement with an interactive chatbot for the customers. In the new chatbot the customers can query for billing information, data usage and also get plan recommendations. It is proposed to build this new chatbot using new technologies and capabilities of Cloud Pak for Data (CP4D) but without disrupting the existing legacy system. The legacy system uses a DB2 database and is the system of record. The new chatbot system uses a Postgresql database. A subset of data needed by the chatbot system is replicated to the PostgreSQL database using [IBM DataStage](https://www.ibm.com/in-en/products/infosphere-datastage). 
 
 When you have completed this code pattern, you will understand how to:
 - Create DataStage flows for data replication using Cloud Pak for Data (CP4D)
@@ -377,7 +377,7 @@ You can share the preview link with others to run the chabot application. You ca
 
 >Authentication of mobile numbers is not implemented in this code pattern to keep things simple. If you are interested in authenticating user mobile numbers, check this [code pattern](https://developer.ibm.com/patterns/authenticate-users-on-your-chatbot-with-sms-one-time-passcode-otp/)
 
-Sample flow of chatbot is as shown in the below video
+Sample flow of chatbot is as shown in the below video.
 
 https://user-images.githubusercontent.com/25784779/123210045-1597d680-d4df-11eb-8656-5ec22d9c17ff.mp4
 
