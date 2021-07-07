@@ -60,14 +60,7 @@ When you have completed this code pattern, you will understand how to:
 
 # Instructions
 
-> Provide the high-level technical steps that a developer will complete in the pattern (the details for these steps will appear in the readme file). For example, if the developer needs to install and configure a program, step one might be "Download the code from GitHub" and step 2 might be "Configure the code on your local drive." You would provide the full technical details on how to configure the code in the readme file.
-
-> Find the detailed steps for this pattern in the [readme file](https://github.com/IBM/app-modernization-coexistence-layer#readme). The steps will show you how to:
-
-1. Step 1
-2. Step 2
-3. Step 3
-4. Step 4
+https://github.com/IBM/app-modernization-coexistence-layer#steps
 
 # Components and services
 
