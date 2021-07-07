@@ -79,9 +79,9 @@ https://github.com/IBM/app-modernization-coexistence-layer#steps
 
 
 # Related IBM Developer content
-[Reasons to modernize your applications](https://developer.ibm.com/articles/reasons-to-modernize-your-applications)
-[Explore checkpoint and restart functionality in DataStage](https://developer.ibm.com/articles/explore-checkpoint-and-restart-functionality-in-datastage)
-[Perform advanced ETL operations with DataStage](https://developer.ibm.com/tutorials/perform-advanced-etl-operations-with-datastage)
+* [Reasons to modernize your applications](https://developer.ibm.com/articles/reasons-to-modernize-your-applications)
+* [Explore checkpoint and restart functionality in DataStage](https://developer.ibm.com/articles/explore-checkpoint-and-restart-functionality-in-datastage)
+* [Perform advanced ETL operations with DataStage](https://developer.ibm.com/tutorials/perform-advanced-etl-operations-with-datastage)
 
 # Related links
 
