@@ -22,8 +22,7 @@ When you have completed this code pattern, you will understand how to:
 7. Cloud functions queries PostgreSQL for data, processes the data and returns the response to Watson Assistant.
 
 ## Watch the video
-
-[![Demo](http://img.youtube.com/vi/Wrc3jFCJ7Yg/0.jpg)](https://youtu.be/Wrc3jFCJ7Yg)
+[![Demo](http://img.youtube.com/vi/Wrc3jFCJ7Yg/1.jpg)](https://youtu.be/Wrc3jFCJ7Yg)
 
 ## Prerequisites
 1. [IBM Cloud Account](https://cloud.ibm.com)
