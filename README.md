@@ -44,6 +44,7 @@ When you have completed this code pattern, you will understand how to:
 9. [Import project in CP4D](#9-import-project-in-cp4d)
 10. [Setup chatbot application](#10-setup-chatbot-application)
 11. [Analyze the results](#11-analyze-the-results)
+12. [Summary](#12-summary)
 
 ## 1. Create an instance of DB2 database
 
@@ -388,6 +389,10 @@ https://user-images.githubusercontent.com/25784779/123210045-1597d680-d4df-11eb-
 If you submit a request to change the plan then that request goes to the legacy application. To make that change in modern database, replication has to happen i.e. you need to run DataStage flows manually if not scheduled. Post that if you query through chatbot, it will show the latest updated plan. The same is shown in the video.
 
 As a next step, you can add a new user using legacy application interface. Replicate the data using DataStage flow and query using your number in chatbot. If previous two steps are successful then chatbot should respond with your name else it will say `Mobile number is not correct` and then accordingly you can check plan, its usage etc. Like this you can verify an end-to-end working flow.
+
+## 12. Summary
+
+In this code pattern, DataStage was used to replicate the data from the legacy DB2 database to the Postgresql database. This enabled a decoupling between the legacy application and the modernized part of the application. This approach ensures that there is no disruption of current operations during modernization.
 
 ## License
 
