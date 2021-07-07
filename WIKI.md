@@ -30,10 +30,6 @@ Cloud Modernization at scale can be disruptive and clients prefer to start the j
 
 # Technologies
 
-> Provide the broad categories of technology used or demonstrated in your pattern. IBM Developer uses a standard list of essential and trending technologies identified by OMs, editors, and stakeholders. The first technology that you list will be considered the primary technology.
-
-> To view all components see [https://developer.ibm.com/technologies/](https://developer.ibm.com/technologies/).
-
 * Conversation
 * Data management
 
