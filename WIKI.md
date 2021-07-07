@@ -32,6 +32,9 @@ Cloud Modernization at scale can be disruptive and clients prefer to start the j
 
 * Conversation
 * Data management
+* Databases
+* Artificial Intelligence
+* Machine Learning
 
 # Description
 
