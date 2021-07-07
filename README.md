@@ -21,6 +21,10 @@ When you have completed this code pattern, you will understand how to:
 6. Watson Assistant chatbot invokes Cloud Functions for the queries.
 7. Cloud functions queries PostgreSQL for data, processes the data and returns the response to Watson Assistant.
 
+## Watch the video
+
+[![Demo](http://img.youtube.com/vi/Wrc3jFCJ7Yg/0.jpg)](https://youtu.be/Wrc3jFCJ7Yg)
+
 ## Prerequisites
 1. [IBM Cloud Account](https://cloud.ibm.com)
 2. [IBM Cloud CLI](https://cloud.ibm.com/docs/cli?topic=cli-getting-started)
