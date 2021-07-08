@@ -8,11 +8,11 @@ Digital Decoupling Layer for Cloud Modernization using Cloud Pak for Data
 
 # Author
 
-* Balaji Kadambi (bkadambi@in.ibm.com)
-* Shikha Maheswari (shikha.mah@in.ibm.com)
-* Muralidhar Chavan (muralidhar.chavan@in.ibm.com)
-* Manjula Hosurmath (mhosurma@in.ibm.com)
-* Anil Paingankar (anpainga@in.ibm.com)
+* Balaji Kadambi 
+* Shikha Maheswari 
+* Muralidhar Chavan 
+* Manjula Hosurmath 
+* Anil Paingankar
 
 # URLs
 
